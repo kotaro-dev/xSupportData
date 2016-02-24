@@ -9,6 +9,20 @@ public class XInfoMock {
 		,	{"","","","","","",""}
 	};
 
+	public static int[][] mergedBlock = {
+			{1,2,0,0}
+		,	{1,2,1,1}
+		,	{1,2,2,2}
+		,	{1,2,3,3}
+		,	{1,2,4,4}
+		,	{1,2,5,5}
+		,	{1,2,6,6}
+		,	{3,12,0,0}
+	};
+
+	public static int freezeCol = 1;
+	public static int freezeRow = 3;
+
 	public static String[][] wasFixedBlock = {
 			{"WebSphere","6.1","2006/6/30","2013/9/30","2012/9 一年間のサポート延長","6.1.0.33",""}
 		,	{"","7.0","2008/10/17","-","","7.0.0.29","CVE-2014-4770/CVE-2014-4816 パッチ適用必須"}

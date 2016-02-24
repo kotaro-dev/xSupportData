@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XInfoWriter {
@@ -65,22 +66,22 @@ public class XInfoWriter {
 			//使用するfont関連を定義(黒・赤・青の３種 黒太字＋１種)
 			Font font = book.createFont();
 			font.setFontName("Arial");
-			font.setFontHeightInPoints((short) 10);
+			font.setFontHeightInPoints((short) 9);
 			font.setColor(IndexedColors.BLACK.getIndex());
 
 			Font font_blue = book.createFont();
 			font_blue.setFontName("Arial");
-			font_blue.setFontHeightInPoints((short) 10);
+			font_blue.setFontHeightInPoints((short) 9);
 			font_blue.setColor(IndexedColors.BLUE.getIndex());
 
 			Font font_red = book.createFont();
 			font_red.setFontName("Arial");
-			font_red.setFontHeightInPoints((short) 10);
+			font_red.setFontHeightInPoints((short) 9);
 			font_red.setColor(IndexedColors.RED.getIndex());
 
 			Font font_bold = book.createFont();
 			font_bold.setFontName("Arial");
-			font_bold.setFontHeightInPoints((short) 10);
+			font_bold.setFontHeightInPoints((short) 9);
 			font_bold.setColor(IndexedColors.BLACK.getIndex());
 			font_bold.setBold(true);
 
@@ -107,6 +108,7 @@ public class XInfoWriter {
 			int  rowNum = 0;
 			int  colNum = 0;
 			String fixedval = "";
+			int  colEnd = 0;
 
 			Sheet sheet = null;
 			sheet = book.createSheet(SHEET_NAME);
@@ -117,17 +119,17 @@ public class XInfoWriter {
 			for (int i = 0; i < xinfomock.fixedLine.length; i++) {
 
 				row = sheet.createRow(i);
+				if (i == 0) {continue;}
 
 				for (int j = 0; j < xinfomock.fixedLine[i].length; j++) {
 
-					fixedval = xinfomock.fixedLine[i][j];
-
 					cell = row.createCell(j);
+
+					fixedval = xinfomock.fixedLine[i][j];
 					cell.setCellValue(fixedval);
-
 					cell.setCellStyle(styleHead);
-				}
 
+				}
 			}
 
 			//COMPANY fixed block 縦横変換している
@@ -189,6 +191,15 @@ public class XInfoWriter {
 					cell = row.createCell(j);
 					cell.setCellValue(fixedval);
 
+/*					System.out.println("1:"+ fixedval.length());
+					System.out.println("2:"+ fixedval.getBytes("UTF-8").length);
+					System.out.println("3:"+ fixedval.getBytes("Shift_JIS").length);
+*/
+					if (fixedval.length() > 14) {
+						styleWas.setWrapText(true);
+					} else {
+						styleWas.setWrapText(false);
+					}
 					cell.setCellStyle(styleWas);
 				}
 
@@ -225,51 +236,36 @@ public class XInfoWriter {
 
 			}
 
+			//merge block
+			for (int i = 0; i < xinfomock.mergedBlock.length; i++) {
 
-/*
-			for (int i = 0; i < 3; i++) {
-				//sheet create & name set
-				sheet = book.createSheet(SHEET_NAME+i);
-
-				//create header line
-				rowNum = 0;
-				colNum = 0;
-				row = sheet.createRow(rowNum);
-
-				//fixed
-				sheet.createFreezePane(1, 1);
-
-				//auto fillter
-				//sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, colNum));
-
-				//auto size col
-				for (int j = 0; j < colNum; j++) {
-					sheet.autoSizeColumn(j, true);
-				}
-
-				//create data row
-				for (int j = 0; j < 10; j++) {
-					rowNum++;
-					colNum = 0;
-
-					row = sheet.createRow(rowNum);
-
-					for (int j2 = 0; j2 < 6; j2++) {
-						cell = row.createCell(j2);
-						cell.setCellValue(rowNum+"-"+j2);
-
-						cell.setCellStyle(style);
-					}
-					for (int j2 = 0; j2 < 6; j2++) {
-						sheet.autoSizeColumn(j2, true);
-					}
-				}
-				sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 3));
+				sheet.addMergedRegion(new CellRangeAddress(
+						xinfomock.mergedBlock[i][0],
+						xinfomock.mergedBlock[i][1],
+						xinfomock.mergedBlock[i][2],
+						xinfomock.mergedBlock[i][3]
+						)
+				);
 			}
 
-			style.setFont(font);
-			cell.setCellStyle(style);
-*/
+			//fixed
+			sheet.createFreezePane(xinfomock.freezeCol,xinfomock.freezeRow);
+
+			colEnd = xinfomock.fixedLine[0].length + xinfomock.cnpyFixedBlock.length;
+			//auto size col
+			for (int i = 0; i < colEnd; i++) {
+				sheet.autoSizeColumn(i, true);
+			}
+
+			//over 20char set 20char 1char 256
+			for (int i = 0; i < colEnd; i++) {
+				if (sheet.getColumnWidth(i) > (256*20)) {
+					sheet.setColumnWidth(i, (256*20));
+				}
+			}
+
+			//auto fillter
+			//sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, colNum));
 
 
 			//output file
