@@ -105,8 +105,6 @@ public class XInfoWriter {
 
 			Row  row    = null;
 			Cell cell   = null;
-			int  rowNum = 0;
-			int  colNum = 0;
 			String fixedval = "";
 			int  colEnd = 0;
 
@@ -115,6 +113,9 @@ public class XInfoWriter {
 
 			//load mock data
 			XInfoMock xinfomock = new XInfoMock();
+
+			int  fixedRowNum = xinfomock.fixedLine.length;
+			int  fixedColNum = xinfomock.fixedLine[0].length;
 
 			for (int i = 0; i < xinfomock.fixedLine.length; i++) {
 
@@ -147,7 +148,7 @@ public class XInfoWriter {
 
 			int curtCol = xinfomock.fixedLine[0].length;
 
-			for (int i = 0; i < xinfomock.cnpyFixedBlock[0].length; i++) {
+			for (int i = 0; i < fixedRowNum; i++) {
 
 				row = sheet.getRow(i);
 
@@ -162,6 +163,11 @@ public class XInfoWriter {
 					}
 
 					cell.setCellStyle(styleCpny);
+
+					//excel col set
+					if (i == 0) {
+						xinfomock.cnpyFixedBlock[j][xinfomock.excelColVal] = String.valueOf(curtCol + j);
+					}
 				}
 
 			}
@@ -184,7 +190,7 @@ public class XInfoWriter {
 				row = sheet.createRow(curtRow + i);
 
 				fixedval = "";
-				for (int j = 0; j < xinfomock.wasFixedBlock[i].length; j++) {
+				for (int j = 0; j < fixedColNum; j++) {
 
 					fixedval = xinfomock.wasFixedBlock[i][j];
 
@@ -203,6 +209,9 @@ public class XInfoWriter {
 					cell.setCellStyle(styleWas);
 				}
 
+				//excel row set
+				xinfomock.wasFixedBlock[i][xinfomock.excelRowVal] = String.valueOf(row.getRowNum());
+
 			}
 
 			//COMPANY fixed block 縦横変換している
@@ -216,6 +225,67 @@ public class XInfoWriter {
 
 			styleData.setFont(font);
 
+			String cpnyName = "";
+			String cpnyVersion = "";
+			String productName = "";
+			String productVersion = "";
+			String productVersionDetail = "";
+			String supportValue = "";
+			String cellStyle = "";
+			int dataRow,dataCol = 0;
+
+			for (int i = 0; i < xinfomock.supportData.length; i++) {
+
+				dataRow = 0;
+				dataCol = 0;
+
+				cpnyName = xinfomock.supportData[i][xinfomock.cpnyName];
+				cpnyVersion = xinfomock.supportData[i][xinfomock.cpnyVersion];
+
+				productName = xinfomock.supportData[i][xinfomock.productName];
+				productVersion = xinfomock.supportData[i][xinfomock.productVersion];
+				productVersionDetail = xinfomock.supportData[i][xinfomock.productVersionDetail];
+
+				supportValue = xinfomock.supportData[i][xinfomock.supportValue];
+				cellStyle = xinfomock.supportData[i][xinfomock.cellStyle];
+
+
+				for (int k = 0; k < xinfomock.wasFixedBlock.length; k++) {
+					if (productName.equals(xinfomock.wasFixedBlock[k][0]) &&
+						productVersionDetail.equals(xinfomock.wasFixedBlock[k][5]) ) {
+						dataRow = Integer.parseInt(xinfomock.wasFixedBlock[k][xinfomock.excelRowVal]);
+						break;
+					}
+				}
+				if (dataRow == 0) {
+					for (int k = 0; k < xinfomock.wasFixedBlock.length; k++) {
+						 if (productName.equals(xinfomock.wasFixedBlock[k][0]) &&
+							productVersion.equals(xinfomock.wasFixedBlock[k][1])) {
+								dataRow = Integer.parseInt(xinfomock.wasFixedBlock[k][xinfomock.excelRowVal]);
+								break;
+							}
+					}
+				}
+
+				for (int j = 0; j < xinfomock.cnpyFixedBlock.length; j++) {
+					if (cpnyName.equals(xinfomock.cnpyFixedBlock[j][0]) &&
+						cpnyVersion.equals(xinfomock.cnpyFixedBlock[j][1])) {
+						dataCol = Integer.parseInt(xinfomock.cnpyFixedBlock[j][xinfomock.excelColVal]);
+						break;
+					}
+				}
+
+				if (!(dataRow == 0) && !(dataCol == 0)) {
+					row = sheet.getRow(dataRow);
+					cell = row.createCell(dataCol);
+					cell.setCellValue(supportValue);
+					cell.setCellStyle(styleData);
+				}
+
+			}
+
+//data配列を変更 一時コメントアウト
+/*
 			curtRow = xinfomock.fixedLine.length;
 			curtCol = xinfomock.fixedLine[0].length;
 
@@ -235,7 +305,7 @@ public class XInfoWriter {
 				}
 
 			}
-
+*/
 			//merge block
 			for (int i = 0; i < xinfomock.mergedBlock.length; i++) {
 
