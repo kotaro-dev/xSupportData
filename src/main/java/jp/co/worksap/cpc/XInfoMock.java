@@ -59,6 +59,22 @@ public class XInfoMock {
 
 	public static Map<Integer, ArrayList<String>> thirdFixedBlock = new HashMap<Integer, ArrayList<String>>() {{
 			put(new Integer(1), new ArrayList<>(Arrays.asList("WebSphere","6.1","6.1.0.33")) );
+			put(new Integer(2), new ArrayList<>(Arrays.asList("WebSphere","7.0","7.0.0.29")) );
+			put(new Integer(3), new ArrayList<>(Arrays.asList("WebSphere","7.0","7.0.0.33")) );
+			put(new Integer(4), new ArrayList<>(Arrays.asList("WebSphere","7.0","7.0.0.35")) );
+			put(new Integer(5), new ArrayList<>(Arrays.asList("WebSphere","7.0","7.0.0.39")) );
+			put(new Integer(6), new ArrayList<>(Arrays.asList("WebSphere","8.0","非推奨")) );
+			put(new Integer(7), new ArrayList<>(Arrays.asList("WebSphere","8.5","8.5.0.2")) );
+			put(new Integer(8), new ArrayList<>(Arrays.asList("WebSphere","8.5.5","8.5.5.3")) );
+			put(new Integer(9), new ArrayList<>(Arrays.asList("WebSphere","8.5.5","8.5.5.6")) );
+			put(new Integer(10), new ArrayList<>(Arrays.asList("WebSphere","8.5.5","8.5.5.7")) );
+
+			put(new Integer(12), new ArrayList<>(Arrays.asList("Oracle","9iR2","非推奨")) );
+			put(new Integer(13), new ArrayList<>(Arrays.asList("Oracle","10gR2","非推奨")) );
+			put(new Integer(14), new ArrayList<>(Arrays.asList("Oracle","11gR2","11.2.0.3")) );
+			put(new Integer(15), new ArrayList<>(Arrays.asList("Oracle","11gR2","11.2.0.4")) );
+			put(new Integer(16), new ArrayList<>(Arrays.asList("Oracle","12cR1","12.1.0.1.19")) );
+			put(new Integer(17), new ArrayList<>(Arrays.asList("Oracle","12cR1","12.1.0.2")) );
 	}};
 
 
